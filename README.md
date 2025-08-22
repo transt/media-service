@@ -2,9 +2,9 @@ System will need to install kubectl, docker, mysql-server, k9s
 # Install Docker Desktop on the Windows machine then when 'wsl' is activated, docker will be active
 
 # Install kubectl
-$ curl -LO "https://dl.k8s.io/release/$(curl -sL https://dl.k8s.io/release/stable.txt)/bin/linux/amd64/kubectl
+$ curl -LO "https://dl.k8s.io/release/$(curl -sL https://dl.k8s.io/release/stable.txt)/bin/linux/amd64/kubectl"
 $ chmod +x kubectl
-$ sudo m kubectl /usr/local/bin/
+$ sudo mv kubectl /usr/local/bin/
 
 # Install and start minikube
 $ curl -LO https://storage.googleapis.com/minikube/releases/latest/minikube-linux-amd64
@@ -23,7 +23,6 @@ $ sudo service mysql start
 
 $ sudo apt install -y python3-dev default-libmysqlclient-dev build-essential
 $ sudo apt install python3.12-venv
-$ sudo apt install -y python3-dev default-libmysqlclient-dev build-essential
 
 # Create virtualenv
 python -m venv media-service
@@ -31,7 +30,7 @@ source ./media-service/bin/activate
 pip install pylint, jedi, flask, flask_mysqldb, pyjwt
 
 # Initialize the database
-sudo mysql -uroot < media-service/python/src/auth/init.sql
+sudo mysql -uroot < <media-service>/python/src/auth/init.sql
 
 
 # Build auth image
