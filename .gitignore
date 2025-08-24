@@ -1,1 +1,4 @@
-python/src/gateway/venv
+**/venv/
+**/.venv/
+*/.pyc
+__pycache__/

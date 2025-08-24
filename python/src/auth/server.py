@@ -1,6 +1,10 @@
-import jwt, datetime, os
+"""Server module to run the auth microservice""" 
+
+import os
+import datetime
+import jwt
 from flask import Flask, request
-from flask_mysqldb import MySQL 
+from flask_mysqldb import MySQL
 
 
 server = Flask(__name__)
@@ -15,6 +19,7 @@ server.config["MYSQL_PORT"] = os.environ.get("MYSQL_PORT")
 
 @server.route("/login", methods=["POST"])
 def login():
+    """Validate user and return JSON web token.""" 
     auth = request.authorization
     if not auth:
         return "missing credentials", 401
@@ -26,37 +31,39 @@ def login():
     )
 
     if res > 0:
-       user_row = cur.fetchone()
-       email = user_row[0]
-       password = user_row[1]
+        user_row = cur.fetchone()
+        email = user_row[0]
+        password = user_row[1]
 
-       if auth.username != email or auth.password != password:
-           return "invalid credentials", 401
-       else:
-           return createJWT(auth.username, os.environ.get("JWT_SECRET"), True)
-    else:
-      return "invalid credentials", 401
+        if auth.username != email or auth.password != password:
+            return "invalid credentials", 401
+        return create_jwt(auth.username, os.environ.get("JWT_SECRET"), True)
+    return "invalid credentials", 401
 
 
 @server.route("/validate", methods=["POST"])
 def validate():
+    """Validate the JSON web token."""
     encoded_jwt = request.headers["Authorization"]
 
     if not encoded_jwt:
         return "missing credentials", 401
 
-    encoded_jwt = encoded_jwt.splie(" ")[1]
+    encoded_jwt = encoded_jwt.split(" ")[1]
     try:
         decoded = jwt.decode(
-            encoded_jwt, os.environ.get("JWT_SECRET"), algorithm=["HS256"]
+            encoded_jwt, os.environ.get("JWT_SECRET"), algorithms=["HS256"]
         )
-    except:
+    except jwt.ExpiredSignatureError:
+        return "token expired", 401
+    except jwt.InvalidTokenError:
         return "not authorized", 403
 
     return decoded, 200
 
 
-def createJWT(username, secret, authz):
+def create_jwt(username, secret, authz):
+    """Create the JSON web token."""
     return jwt.encode(
         {
             "username": username,

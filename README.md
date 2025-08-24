@@ -30,7 +30,7 @@ source ./media-service/bin/activate
 pip install pylint, jedi, flask, flask_mysqldb, pyjwt
 
 # Initialize the database
-sudo mysql -uroot < <media-service>/python/src/auth/init.sql
+sudo mysql -uroot < media-service>/python/src/auth/init.sql
 
 
 # Build auth image
